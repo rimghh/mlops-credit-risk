@@ -38,7 +38,7 @@ jobs:
           pip install pandas numpy scikit-learn streamlit joblib mlflow pytest
 
       - name: Run tests
-        run: python -m pytest tests/ -v --tb=short
+        run: python -m pytest mlops-webapp/tests/ -v --tb=short
 
   # ── Job 2 : Deploy to Azure Web App ────────────────────────────
   deploy:
