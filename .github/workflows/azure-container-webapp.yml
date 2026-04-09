@@ -1,20 +1,5 @@
 name: CI/CD - Build & Deploy to Azure
 
-# ─────────────────────────────────────────────────────────────────
-# Ce workflow se déclenche à chaque push ou PR sur main.
-# Il lance les tests puis déploie sur Azure Web App.
-#
-# SECRETS À CONFIGURER DANS GITHUB (Settings > Secrets > Actions) :
-#
-#   DEV  →  JSON du service principal, format :
-#     {
-#       "clientId": "3dbccadf-c86c-4e1f-8951-532628dea8cd",
-#       "clientSecret": "<VOTRE_NOUVEAU_SECRET>",
-#       "subscriptionId": "7692ba94-fc6c-478c-b875-f843900ba2ed",
-#       "tenantId": "64dd45e7-1fde-4ce7-b28d-dbf6f864f315"
-#     }
-# ─────────────────────────────────────────────────────────────────
-
 on:
   push:
     branches: [main]
@@ -25,6 +10,9 @@ jobs:
   # ── Job 1 : Tests ──────────────────────────────────────────────
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "mlops webapp"
     steps:
       - uses: actions/checkout@v4
 
@@ -35,10 +23,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandas numpy scikit-learn streamlit joblib mlflow pytest
+          pip install -r requirements.txt
+          pip install pytest
 
       - name: Run tests
-        run: python -m pytest mlops-webapp/tests/ -v --tb=short
+        run: python -m pytest tests/ -v --tb=short
 
   # ── Job 2 : Deploy to Azure Web App ────────────────────────────
   deploy:
@@ -51,7 +40,8 @@ jobs:
 
       - name: Create deployment package
         run: |
-          zip -r deploy.zip app/ models/ requirements.txt startup.sh Procfile
+          cd "mlops webapp"
+          zip -r ../deploy.zip app/ models/ requirements.txt startup.sh Procfile
 
       - name: Login to Azure
         uses: azure/login@v2
