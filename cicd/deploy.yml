@@ -25,6 +25,9 @@ jobs:
   # ── Job 1 : Tests ──────────────────────────────────────────────
   test:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: "mlops webapp"
     steps:
       - uses: actions/checkout@v4
 
@@ -35,7 +38,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandas numpy scikit-learn streamlit joblib mlflow pytest
+          pip install -r requirements.txt
+          pip install pytest
 
       - name: Run tests
         run: python -m pytest tests/ -v --tb=short
@@ -51,7 +55,8 @@ jobs:
 
       - name: Create deployment package
         run: |
-          zip -r deploy.zip app/ models/ requirements.txt startup.sh Procfile
+          cd "mlops webapp"
+          zip -r ../deploy.zip app/ models/ requirements.txt startup.sh Procfile
 
       - name: Login to Azure
         uses: azure/login@v2
