@@ -41,6 +41,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies & train model
+        run: |
+          cd "mlops webapp"
+          pip install -r requirements.txt
+          pip install mlflow
+          python src/train.py
+
       - name: Create deployment package
         run: |
           cd "mlops webapp"
