@@ -56,7 +56,11 @@ jobs:
       - name: Create deployment package
         run: |
           cd "mlops webapp"
+          echo "=== Models directory ==="
+          ls -la models/
           zip -r ../deploy.zip app/ models/ requirements.txt startup.sh Procfile
+          echo "=== Zip contents ==="
+          unzip -l ../deploy.zip
 
       - name: Login to Azure
         uses: azure/login@v2
