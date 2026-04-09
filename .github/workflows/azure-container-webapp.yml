@@ -24,7 +24,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install pytest
+          pip install pytest mlflow
+
+      - name: Train model
+        run: python src/train.py
 
       - name: Run tests
         run: python -m pytest tests/ -v --tb=short
