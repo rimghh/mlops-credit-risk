@@ -34,7 +34,6 @@ artifacts/
 
 # Models
 models/*.pkl
-models/*.joblib
 
 # Environment
 .env
